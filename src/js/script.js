@@ -6,7 +6,11 @@
       book: '#template-book',
     },
     containerOf: {
-      books: '.books-list',
+      booksList: '.books-list',
+    },
+    book: {
+      bookId: 'data-id',
+      bookImage: '.book__image',
     },
   };
 
@@ -18,38 +22,64 @@
     initdata: function () {
       const thisApp = this;
       thisApp.data = dataSource;
+      thisApp.favoriteBookCarts = [];
     },
 
-    initBooksList: function () {
+    initBookCartsList: function () {
       const thisApp = this;
 
       for (let book in thisApp.data.books) {
-        new Book(thisApp.data.books[book]);
+        new BookCart(thisApp.data.books[book]);
       }
     },
     init: function () {
       const thisApp = this;
 
       thisApp.initdata();
-      thisApp.initBooksList();
+      thisApp.initBookCartsList();
+      
+      thisApp.getElements();
+      thisApp.initActions();
+
     },
+    getElements() {
+      const thisApp = this;
+      thisApp.dom = {};
+      thisApp.dom.booksContainer = document.querySelector(select.containerOf.booksList);
+      thisApp.dom.booksImages = document.querySelectorAll(select.book.bookImage);
+    },
+    initActions() {
+      const thisApp = this;
+      const favBooks = thisApp.favoriteBookCarts;
+      console.log(favBooks);
+
+      for (let book of thisApp.dom.booksImages) {
+        book.addEventListener('dblclick', function (event) {
+          event.preventDefault();
+          const bookId = book.getAttribute(select.book.bookId);
+          favBooks.push(bookId);
+          console.log(favBooks);
+        });
+      }
+    }
   };
 
-  class Book {
+  class BookCart {
 
     constructor(data) {
-      const thisBook = this;
-      thisBook.data = data;
-      thisBook.renderBook();
+      const thisBookCart = this;
+      thisBookCart.data = data;
+      thisBookCart.renderBookCart();
     }
 
-    renderBook() {
-      const thisBook = this;
-      const generateHTML = templates.book(thisBook.data);
-      thisBook.element = utils.createDOMFromHTML(generateHTML);
-      const booksContainer = document.querySelector(select.containerOf.books);
-      booksContainer.appendChild(thisBook.element);
+    renderBookCart() {
+      const thisBookCart = this;
+      const generateHTML = templates.book(thisBookCart.data);
+      thisBookCart.element = utils.createDOMFromHTML(generateHTML);
+      const booksContainer = document.querySelector(select.containerOf.booksList);
+      booksContainer.appendChild(thisBookCart.element);
     }
+
   }
   app.init();
 }
