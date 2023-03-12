@@ -7,6 +7,8 @@
     },
     containerOf: {
       booksList: '.books-list',
+      filters: '.filters',
+
     },
     book: {
       bookId: 'data-id',
@@ -23,6 +25,7 @@
       const thisApp = this;
       thisApp.data = dataSource;
       thisApp.favoriteBookCarts = new Set();
+      thisApp.filters = new Set();
     },
 
     initBookCartsList: function () {
@@ -47,13 +50,12 @@
       thisApp.dom = {};
       thisApp.dom.booksContainer = document.querySelector(select.containerOf.booksList);
       thisApp.dom.booksImages = document.querySelectorAll(select.book.bookImage);
+      thisApp.dom.filters = document.querySelector(select.containerOf.filters);
     },
     initActions() {
       const thisApp = this;
       const favBooks = thisApp.favoriteBookCarts;
-      console.log(favBooks);
-      const booksList = thisApp.dom.booksContainer;
-      booksList.addEventListener('dblclick', function (event) {
+      thisApp.dom.booksContainer.addEventListener('dblclick', function (event) {
         event.preventDefault();
         const element = event.target.offsetParent;
         const bookId = element.getAttribute(select.book.bookId);
@@ -66,7 +68,38 @@
         }
         console.log(favBooks);
       });
-    }
+      thisApp.dom.filters.addEventListener('click', function (event) {
+        const element = event.target;
+        console.log(element.value);
+        if (element.type == 'checkbox') {
+          const value = element.value;
+          if (element.checked) {
+            thisApp.filters.add(value);
+          } else {
+            thisApp.filters.delete(value);
+          }
+        }
+        thisApp.filterBooks();
+      });
+    },
+    filterBooks() {
+      const thisBook = this;
+      for (let book of dataSource.books) {
+        const dataId = document.querySelector(select.book.bookImage + '[data-id = "' + book.id + '"]');
+        let shouldBeHidden = false;
+        for (let filter of thisBook.filters) {
+          if (!book.details[filter]) {
+            shouldBeHidden = true;
+            break;
+          }
+        }
+        if (shouldBeHidden) {
+          dataId.classList.add('hidden');
+        } else {
+          dataId.classList.remove('hidden');
+        }
+      }
+    },
   };
 
   class BookCart {
