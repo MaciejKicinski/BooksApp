@@ -52,22 +52,20 @@
       const thisApp = this;
       const favBooks = thisApp.favoriteBookCarts;
       console.log(favBooks);
-
-      for (let book of thisApp.dom.booksImages) {
-        book.addEventListener('dblclick', function (event) {
-          event.preventDefault();
-
-          const bookId = book.getAttribute(select.book.bookId);
-          if (favBooks.has(bookId)) {
-            book.classList.remove('favorite');
-            favBooks.delete(bookId);
-          } else {
-            book.classList.add('favorite');
-            favBooks.add(bookId);
-          }
-          console.log(favBooks);
-        });
-      }
+      const booksList = thisApp.dom.booksContainer;
+      booksList.addEventListener('dblclick', function (event) {
+        event.preventDefault();
+        const element = event.target.offsetParent;
+        const bookId = element.getAttribute(select.book.bookId);
+        if (favBooks.has(bookId)) {
+          element.classList.remove('favorite');
+          favBooks.delete(bookId);
+        } else {
+          element.classList.add('favorite');
+          favBooks.add(bookId);
+        }
+        console.log(favBooks);
+      });
     }
   };
 
