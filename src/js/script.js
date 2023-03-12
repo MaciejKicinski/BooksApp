@@ -22,7 +22,7 @@
     initdata: function () {
       const thisApp = this;
       thisApp.data = dataSource;
-      thisApp.favoriteBookCarts = [];
+      thisApp.favoriteBookCarts = new Set();
     },
 
     initBookCartsList: function () {
@@ -37,7 +37,7 @@
 
       thisApp.initdata();
       thisApp.initBookCartsList();
-      
+
       thisApp.getElements();
       thisApp.initActions();
 
@@ -56,8 +56,15 @@
       for (let book of thisApp.dom.booksImages) {
         book.addEventListener('dblclick', function (event) {
           event.preventDefault();
+
           const bookId = book.getAttribute(select.book.bookId);
-          favBooks.push(bookId);
+          if (favBooks.has(bookId)) {
+            book.classList.remove('favorite');
+            favBooks.delete(bookId);
+          } else {
+            book.classList.add('favorite');
+            favBooks.add(bookId);
+          }
           console.log(favBooks);
         });
       }
