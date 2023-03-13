@@ -112,12 +112,26 @@
 
     renderBookCart() {
       const thisBookCart = this;
+      thisBookCart.data.ratingBgc = thisBookCart.determineRatingBgc(thisBookCart.data.rating);
+      thisBookCart.data.ratingWidth = thisBookCart.data.rating * 10;
       const generateHTML = templates.book(thisBookCart.data);
       thisBookCart.element = utils.createDOMFromHTML(generateHTML);
       const booksContainer = document.querySelector(select.containerOf.booksList);
       booksContainer.appendChild(thisBookCart.element);
     }
-
+    determineRatingBgc(rating) {
+      let background = '';
+      if (rating < 6) {
+        background = 'linear-gradient(to bottom,  #fefcea 0%, #f1da36 100%)';
+      } else if (rating > 6 && rating <= 8) {
+        background = 'linear-gradient(to bottom, #b4df5b 0%,#b4df5b 100%)';
+      } else if (rating > 8 && rating <= 9) {
+        background = 'linear-gradient(to bottom, #299a0b 0%, #299a0b 100%)';
+      } else if (rating > 9) {
+        background = 'linear-gradient(to bottom, #ff0084 0%,#ff0084 100%)';
+      }
+      return background;
+    }
   }
   app.init();
 }
